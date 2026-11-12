@@ -1,3 +1,6 @@
+#####################################
+TRAINING / EVAL DATASETS
+#####################################
 # Define the base directory for segmentation train
 segmentation_images_dir = os.path.join(BASE_DIR, "brisc2025", "segmentation_task", "train", "images")
 segmentation_masks_dir = os.path.join(BASE_DIR, "brisc2025", "segmentation_task", "train", "masks")
@@ -26,3 +29,35 @@ segmentation_df = pd.DataFrame({
 
 print(f"Loaded {len(segmentation_df)} image-mask pairs for Segmentation Task.")
 display(segmentation_df.head())
+
+#####################################
+TESTING DATASET
+#####################################
+
+# Define the base directory for segmentation test
+segmentation_test_images_dir = os.path.join(BASE_DIR, "brisc2025", "segmentation_task", "test", "images")
+segmentation_test_masks_dir = os.path.join(BASE_DIR, "brisc2025", "segmentation_task", "test", "masks")
+
+test_image_paths = []
+test_mask_paths = []
+
+if os.path.exists(segmentation_test_images_dir):
+    for file in sorted(os.listdir(segmentation_test_images_dir)):
+        if file.lower().endswith(('.png', '.jpg', '.jpeg')):
+            img_path = os.path.join(segmentation_test_images_dir, file)
+            
+            # Map corresponding mask filename (often same name with .png extension)
+            mask_name = file.replace(".jpg", ".png").replace(".jpeg", ".png") 
+            mask_path = os.path.join(segmentation_test_masks_dir, mask_name)
+            
+            if os.path.exists(mask_path):
+                test_image_paths.append(img_path)
+                test_mask_paths.append(mask_path)
+
+segmentation_test_df = pd.DataFrame({
+    'image_path': test_image_paths,
+    'mask_path': test_mask_paths
+})
+
+print(f"Loaded {len(segmentation_test_df)} test image-mask pairs for Segmentation Task.")
+display(segmentation_test_df.head())
