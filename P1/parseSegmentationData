@@ -1,0 +1,28 @@
+# Define the base directory for segmentation train
+segmentation_images_dir = os.path.join(BASE_DIR, "brisc2025", "segmentation_task", "train", "images")
+segmentation_masks_dir = os.path.join(BASE_DIR, "brisc2025", "segmentation_task", "train", "masks")
+
+image_paths = []
+mask_paths = []
+
+if os.path.exists(segmentation_images_dir):
+    for file in sorted(os.listdir(segmentation_images_dir)):
+        if file.lower().endswith(('.png', '.jpg', '.jpeg')):
+            img_path = os.path.join(segmentation_images_dir, file)
+            
+            # Map corresponding mask filename (often same name or similar extension)
+            # We search for png or jpg matching mask files
+            mask_name = file.replace(".jpg", ".png").replace(".jpeg", ".png") 
+            mask_path = os.path.join(segmentation_masks_dir, mask_name)
+            
+            if os.path.exists(mask_path):
+                image_paths.append(img_path)
+                mask_paths.append(mask_path)
+
+segmentation_df = pd.DataFrame({
+    'image_path': image_paths,
+    'mask_path': mask_paths
+})
+
+print(f"Loaded {len(segmentation_df)} image-mask pairs for Segmentation Task.")
+display(segmentation_df.head())
